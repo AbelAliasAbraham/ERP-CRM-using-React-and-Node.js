@@ -16,71 +16,6 @@ This repository contains a full-featured **Enterprise Resource Planning (ERP)** 
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Prerequisites
-
-* Node.js (LTS recommended)
-* MongoDB Instance (Local or MongoDB Atlas connection string)
-
-### 2. Installation
-
-1.  **Clone the Repository:**
-    ```bash
-    git clone [YOUR_REPO_URL]
-    cd nex-erp
-    ```
-
-2.  **Install Dependencies:**
-    You need to install dependencies for both the backend and frontend.
-    ```bash
-    # Backend Setup
-    cd backend
-    npm install
-
-    # Frontend Setup
-    cd ../frontend
-    npm install
-    ```
-
-3.  **Setup Environment Variables:**
-    
-    **Backend (`/backend/.env`):**
-    ```env
-    NODE_ENV=development
-    PORT=5000
-    MONGO_URI=mongodb://localhost:27017/ERP  # Or your Atlas URI
-    JWT_SECRET=your_strong_secret_key_here
-    JWT_EXPIRE=7d
-    ```
-
-    **Frontend (`/frontend/.env.local`):**
-    ```env
-    VITE_API_URL=http://localhost:5000/api
-    ```
-
-4.  **Seed the Database (Auto-Admin):**
-    The application handles the initial seed automatically. When the backend server starts, it checks for an admin user.
-    * **Default User:** `admin@nexerp.com`
-    * **Default Password:** `password`
-
-5.  **Run the Application:**
-    You will need two terminal windows.
-
-    ```bash
-    # Terminal 1: Start Backend
-    cd backend
-    npm run dev
-    # Output: "MongoDB Connected" & "Admin created..."
-
-    # Terminal 2: Start Frontend
-    cd frontend
-    npm run dev
-    # Opens on http://localhost:5173
-    ```
-
----
-
 ## 🗂️ File Structure
 
 The project is divided into two main directories: `/backend` and `/frontend`.
@@ -144,3 +79,71 @@ To ensure the system is usable immediately after installation without manual dat
 | :--- | :--- | :--- |
 | **Logic** | `server.js` | On boot, checks `User` collection count. If 0, creates the default Admin. |
 | **Credentials** | Hardcoded (Dev) | Creates `admin@nexerp.com` / `password`. Change immediately in production. |
+
+---
+## 🚀 Getting Started
+
+### 1. Prerequisites
+
+* Node.js (LTS recommended)
+* MongoDB Instance (Local or MongoDB Atlas connection string)
+
+### 2. Installation
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [YOUR_REPO_URL]
+    cd nex-erp
+    ```
+
+2.  **Install Dependencies:**
+    You need to install dependencies for both the backend and frontend.
+    ```bash
+    # Backend Setup
+    cd backend
+    npm install
+
+    # Frontend Setup
+    cd ../frontend
+    npm install
+    ```
+
+3.  **Setup Environment Variables:**
+    
+    **Backend (`/backend/.env`):**
+    ```env
+    NODE_ENV=development
+    PORT=5000
+    MONGO_URI=mongodb://localhost:27017/ERP  # Or your Atlas URI
+    JWT_SECRET=your_strong_secret_key_here
+    JWT_EXPIRE=7d
+    ```
+
+    **Frontend (`/frontend/.env.local`):**
+    ```env
+    VITE_API_URL=http://localhost:5000/api
+    ```
+
+4.  **Seed the Database (Auto-Admin):**
+    The application handles the initial seed automatically. When the backend server starts, it checks for an admin user.
+    * **Default User:** `admin@nexerp.com`
+    * **Default Password:** `password`
+
+5.  **Run the Application:**
+    You will need two terminal windows.
+
+    ```bash
+    # Terminal 1: Start Backend
+    cd backend
+    npm run dev
+    # Output: "MongoDB Connected" & "Admin created..."
+
+    # Terminal 2: Start Frontend
+    cd frontend
+    npm run dev
+    # Opens on http://localhost:5173
+    ```
+
+> 🔔 **Note:** Both the backend server and frontend client must be running **concurrently** in two separate terminal windows for the full application to function.
+
+
