@@ -1,153 +1,146 @@
 # ERP-CRM-using-React-and-Node.js
-NexERP is a modern, full-stack ERP application designed to manage core business functions: customer relations, inventory, employee records, invoicing, and more. It features a Node.js/Express/MongoDB backend with JWT-based authentication, and a React + Ant Design frontend SPA.
+
+This repository contains a full-featured **Enterprise Resource Planning (ERP)** application designed to manage core business functions. Built with the **MERN stack**, it facilitates customer relations, inventory tracking, employee records, and dynamic invoicing with a secure RESTful API and a responsive dashboard.
+
 ---
-## Table of Contents
-1. [Tech Stack](#tech-stack)  
-2. [Prerequisites](#prerequisites)  
-3. [Backend Setup](#backend-setup)  
-   1. [Installation](#backend-installation)  
-   2. [Configuration](#backend-configuration)  
-   3. [Seed Data & Admin User](#seed-data--admin-user)  
-   4. [Running the Server](#running-the-server)  
-4. [Frontend Setup](#frontend-setup)  
-   1. [Installation](#frontend-installation)  
-   2. [Configuration](#frontend-configuration)  
-   3. [Running the App](#running-the-app)  
-5. [Key Features](#key-features)  
-6. [Project Structure](#project-structure)  
-7. [Environment Variables](#environment-variables)  
-8. [Contributing](#contributing)  
-9. [License](#license)  
+
+## 💻 Tech Stack Overview
+
+| Component | Technology | Role |
+| :--- | :--- | :--- |
+| **Backend** | Node.js, Express | RESTful API, business logic, and PDF generation services. |
+| **Database** | MongoDB, Mongoose | NoSQL database with strict data modeling for ERP entities. |
+| **Frontend** | React (Vite) | Single Page Application (SPA) for the user interface. |
+| **UI Framework** | Ant Design (Antd) | Enterprise-level UI components for consistent styling. |
+| **Authentication** | JWT, bcrypt | Secure token-based authentication and password hashing. |
+
 ---
-## Tech Stack
-- **Backend**  
-  - Node.js, Express  
-  - MongoDB (Mongoose ODM)  
-  - JWT authentication, bcrypt password hashing  
-  - Dynamic PDF generation for invoices  
-- **Frontend**  
-  - React with Vite bundler  
-  - Ant Design UI library  
-  - Axios service layer with token interceptor  
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+
+* Node.js (LTS recommended)
+* MongoDB Instance (Local or MongoDB Atlas connection string)
+
+### 2. Installation
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone [YOUR_REPO_URL]
+    cd nex-erp
+    ```
+
+2.  **Install Dependencies:**
+    You need to install dependencies for both the backend and frontend.
+    ```bash
+    # Backend Setup
+    cd backend
+    npm install
+
+    # Frontend Setup
+    cd ../frontend
+    npm install
+    ```
+
+3.  **Setup Environment Variables:**
+    
+    **Backend (`/backend/.env`):**
+    ```env
+    NODE_ENV=development
+    PORT=5000
+    MONGO_URI=mongodb://localhost:27017/ERP  # Or your Atlas URI
+    JWT_SECRET=your_strong_secret_key_here
+    JWT_EXPIRE=7d
+    ```
+
+    **Frontend (`/frontend/.env.local`):**
+    ```env
+    VITE_API_URL=http://localhost:5000/api
+    ```
+
+4.  **Seed the Database (Auto-Admin):**
+    The application handles the initial seed automatically. When the backend server starts, it checks for an admin user.
+    * **Default User:** `admin@nexerp.com`
+    * **Default Password:** `password`
+
+5.  **Run the Application:**
+    You will need two terminal windows.
+
+    ```bash
+    # Terminal 1: Start Backend
+    cd backend
+    npm run dev
+    # Output: "MongoDB Connected" & "Admin created..."
+
+    # Terminal 2: Start Frontend
+    cd frontend
+    npm run dev
+    # Opens on http://localhost:5173
+    ```
+
 ---
-## Prerequisites
-- **Node.js** (v16+)  
-- **npm** or **yarn**  
-- **MongoDB**  
-  - Local installation or MongoDB Atlas account  
+
+## 🗂️ File Structure
+
+The project is divided into two main directories: `/backend` and `/frontend`.
+
+### ⚙️ Backend Files (`/backend`)
+
+| Path | File Name | Description & Key Functionality |
+| :--- | :--- | :--- |
+| Root | **server.js** | Entry Point: Connects to DB, runs Admin seed check, starts server. |
+| Controllers | **authController.js** | Handles Login (`/login`), Register (`/register`), and User Info (`/me`). |
+| Controllers | **dashboardController.js** | Aggregates metrics: Revenue, Total Orders, Customer counts. |
+| Controllers | **customerController.js** | Standard CRUD operations for managing Client data. |
+| Controllers | **productController.js** | Manages Inventory items, SKUs, and Stock levels. |
+| Controllers | **employeeController.js** | HR module for managing Employee records. |
+| Controllers | **invoiceController.js** | Handles creation of invoice records and **dynamic PDF generation**. |
+| Routes | **[resource]Routes.js** | Maps API endpoints to their respective controllers (e.g., `/api/invoices`). |
+
+### ⚛️ Frontend Files (`/frontend/src`)
+
+| Path | File Name | Description & Key Functionality |
+| :--- | :--- | :--- |
+| Root | **App.jsx** | Main Layout wrapper; defines routes and Sidebar structure. |
+| Services | **api.js** | Axios instance; automatically attaches `x-auth-token` from localStorage. |
+| Auth | **Login.jsx** | Handles user authentication and token storage. |
+| Auth | **PrivateRoute.jsx** | Route wrapper that protects internal pages from unauthenticated access. |
+| Dashboard | **Dashboard.jsx** | Fetches and visualizes real-time business statistics. |
+| Modules | **CustomerList.jsx** | Data table for customers with Edit/Delete actions. |
+| Modules | **ProductList.jsx** | Inventory view; manages stock counts and product details. |
+| Modules | **InvoiceList.jsx** | Lists invoices and includes a **Download PDF** button triggering the backend. |
+
 ---
-## Backend Setup
-### Installation
-\`\`\`bash
-# Clone the repo
-git clone <repo-url>
-cd nex-erp/backend
-# Install dependencies
-npm install
-\`\`\`
-### Configuration
-Create a \`.env\` file in \`/backend\` with:
-\`\`\`ini
-NODE_ENV=development
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ERP      # or your Atlas connection string
-JWT_SECRET=your_strong_secret_key_here       # change for production
-JWT_EXPIRE=7d
-\`\`\`
-### Seed Data & Admin User
-On server start, if no admin exists, one is auto-created:
-- **Role:** Admin  
-- **Email:** admin@nexerp.com  
-- **Password:** password  
-> _Change this in production!_
-### Running the Server
-\`\`\`bash
-# Development (with nodemon)
-npm run dev
-# Production
-npm start
-\`\`\`
-Server logs:
-\`\`\`
-MongoDB Connected
-Admin created: admin@nexerp.com / password
-\`\`\`
----
-## Frontend Setup
-### Installation
-\`\`\`bash
-cd ../frontend
-npm install
-\`\`\`
-### Configuration
-Create an \`.env.local\` in \`/frontend\`:
-\`\`\`ini
-VITE_API_URL=http://localhost:5000/api
-\`\`\`
-### Running the App
-\`\`\`bash
-npm run dev
-\`\`\`
-By default, the app opens at \`http://localhost:5173/\`.
----
-## Key Features
-- **Authentication**  
-  - Login & protected routes via JWT  
-  - Role-based access (admin vs. user)
-- **Dashboard**  
-  - Real-time metrics: revenue, orders, customers, low-stock alerts
-- **Customers & HR**  
-  - CRUD operations with modal-based forms
-- **Inventory Management**  
-  - Product list, SKU, pricing, stock levels
-- **Invoicing**  
-  - Create invoices, dynamic PDF generation, download links
-- **Consistent UI**  
-  - Ant Design components for tables, forms, layouts
----
-## Project Structure
-\`\`\`
-/
-├── backend  
-│   ├── controllers/  
-│   ├── middleware/  
-│   ├── models/  
-│   ├── routes/  
-│   ├── utils/  
-│   └── server.js  
-└── frontend  
-    ├── public/  
-    ├── src/  
-    │   ├── components/  
-    │   ├── pages/  
-    │   ├── services/      # api.js  
-    │   └── App.jsx  
-    └── vite.config.js  
-\`\`\`
----
-## Environment Variables
-| Name         | Backend                          | Frontend                  |
-|--------------|----------------------------------|---------------------------|
-| NODE_ENV     | development / production         | —                         |
-| PORT         | 5000                             | —                         |
-| MONGO_URI    | MongoDB connection string        | —                         |
-| JWT_SECRET   | Secret for token signing         | —                         |
-| JWT_EXPIRE   | Token expiration (e.g., \`7d\`)  | —                         |
-| VITE_API_URL | —                                | Base URL for API calls   |
----
-## Contributing
-1. Fork the repository  
-2. Create a feature branch:  
-   \`\`\`bash
-   git checkout -b feature/YourFeature
-   \`\`\`
-3. Commit your changes:  
-   \`\`\`bash
-   git commit -m "Add YourFeature"
-   \`\`\`
-4. Push to your fork:  
-   \`\`\`bash
-   git push origin feature/YourFeature
-   \`\`\`
-5. Open a Pull Request  
-Please follow the existing code style and include relevant tests.
+
+## 🛠️ Key Implementation Details
+
+The following workflows are critical to the system's operation.
+
+### 1. 🔐 Authentication & Security
+
+The system uses a stateless JWT architecture.
+
+| Feature | Implementation | Details |
+| :--- | :--- | :--- |
+| **Token Storage** | `localStorage` | Upon login, the JWT is stored client-side. |
+| **Request Interception** | `api.js` | The Axios interceptor injects the token into the `x-auth-token` header for every request. |
+| **Password Security** | `bcrypt` | Passwords are hashed before storage; never stored in plain text. |
+
+### 2. 📄 Dynamic Invoice Generation
+
+The invoicing system does not just store data; it produces physical documents.
+
+| Feature | Implementation | Details |
+| :--- | :--- | :--- |
+| **PDF Engine** | Backend Controller | `invoiceController.js` generates PDFs on the fly using data from MongoDB. |
+| **Delivery** | Binary Stream | The frontend receives the PDF as a blob and triggers a browser download. |
+
+### 3. 👤 Automatic Admin Seeding
+
+To ensure the system is usable immediately after installation without manual database insertion.
+
+| Feature | Implementation | Details |
+| :--- | :--- | :--- |
+| **Logic** | `server.js` | On boot, checks `User` collection count. If 0, creates the default Admin. |
+| **Credentials** | Hardcoded (Dev) | Creates `admin@nexerp.com` / `password`. Change immediately in production. |
